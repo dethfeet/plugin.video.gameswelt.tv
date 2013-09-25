@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Plugin name -->
+  <string id="30000">gameswelt.tv</string>
+  
+  <string id="30110">Quality</string>
+  <string id="30111">SD</string>
+  <string id="30112">HD</string>
+</strings>
