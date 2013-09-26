@@ -1,7 +1,5 @@
-import json
-import re
 import urllib2
-from urllib import quote, unquote, urlencode
+from urllib import quote
 from BeautifulSoup import BeautifulSoup
 
 MAIN_URL = 'http://www.gameswelt.tv'
@@ -31,17 +29,19 @@ def get_videos(path):
     page = __get_tree(url)    
     
     videos = []
-    ul = page.find(id='videoList')
+    ul = page.find(id=['videoList','tab-videos'])
     for li in ul.findAll('li',{'class':'videoEntry'}):
         div = li.find('div',{'class':'videoPreview'})
-        ulVideoInfo = li.find('ul',{'class':'videoInfo'})
-        title = ulVideoInfo.find('li',{'class':'title'}).find('a').string
-        subline = ulVideoInfo.find('li',{'class':'subline'}).find('a').string
+        ulVideoInfo = li.find(['ul','div'],{'class':'videoInfo'})
+        title = ulVideoInfo.find(['li','div'],{'class':'title'}).find('a').string
+        subline = ulVideoInfo.find(['li','div'],{'class':'subline'}).find('a').string
+        teaser = ulVideoInfo.find(['li','div'],{'class':'teaser'}).string
         videos.append({
             'parameter': video_id(div.find('a')['href']),
             'title': title+' - '+subline,
             'thumb': div.find('img')['src'],
-            'type': 'video'
+            'type': 'video',
+            'teaser': teaser
         })
     
     #Next page
@@ -68,7 +68,10 @@ def get_video_urls(videoId):
     }
     return video_urls
     
-    
+def get_search_path(search_string):
+    return '/suche/index.html?suchbegriff=%s&suchart=videos' % quote(search_string)
+
+  
 def __get_tree(url):
     log('__get_tree opening url: %s' % url)
     headers = {}
